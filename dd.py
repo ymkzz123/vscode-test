@@ -1,34 +1,28 @@
-from collections import deque
 import sys
 input = sys.stdin.readline
+sys.setrecursionlimit(21900)
 
+def dfs(v, prev):
+    for next, c in g[v]:
+        if next == prev:
+            continue
+        d[next] = d[v]+c
+        dfs(next, v)
 
-def dfs(v):
-    visited[v] = True
-    for i in g[v]:
-        if not visited[i]:
-            dfs(i)
-
-
-def bfs(x, y):
-    dx = [1, -1, 0, 0]
-    dy = [0, 0, 1, -1]
-    q = deque([(x, y)])
-    
-    while q:
-        x, y = q.popleft
-        
-        for i in range(4):
-            nx = x+dx[i]
-            ny = y+dy[i]
-            
-            if 0 <= nx < N and 0 <= ny < N:
-                res += 1
-                q.append((nx, ny))
-    
-visited = [False]*10001
-g = [[], [2,3],[3,4],[1,2],[2]]
-N = int(input())
+n = int(input())
+g = [[] for _ in range(n+1)]
 res = 0
+d = [0]*(n+1)
 
-print(bfs(1,1))
+for _ in range(n-1):
+    p, s, w = map(int, input().split())
+    g[p].append((s, w))
+    g[s].append((p, w))
+
+dfs(1, 0)
+
+long = d.index(max(d))
+d = [0]*(n+1)
+dfs(long, 0)
+
+print(max(d))
